@@ -1,6 +1,8 @@
 import pandas as pd
 import re
 
+# --------------------------------------------------------------------------------------------------
+# Разбиение аннотацию локализации
 def get_locations(text):
     
     if pd.isna(text):
@@ -30,6 +32,8 @@ def get_locations(text):
 
     return locations
 
+# --------------------------------------------------------------------------------------------------
+# Cопоставление названия локализации с одним из наших классов по словарю
 def get_class(location):
     main_location = location.split(",", 1)[0].strip()
 
@@ -54,6 +58,8 @@ location_classes = {
     "Endoplasmic reticulum lumen": "endoplasmic_reticulum"
 }
 
+# --------------------------------------------------------------------------------------------------
+# Определение итоговой метки записи
 def get_label(locations):
     if not locations:
         return None
@@ -83,3 +89,5 @@ def get_label(locations):
         return None
 
     return label
+
+# --------------------------------------------------------------------------------------------------
