@@ -30,4 +30,54 @@ def get_locations(text):
             locations.append(name)
 
     return locations
-    
+
+def get_class(location):
+    main_location = location.split(",", 1)[0].strip()
+
+    return location_classes.get(main_location)
+
+location_classes = {
+    "Nucleus": "nucleus",
+    "Cytoplasm": "cytoplasm",
+    "Cytosol": "cytoplasm",
+    "Cell membrane": "cell_membrane",
+
+    "Mitochondrion": "mitochondrion",
+    "Mitochondrion matrix": "mitochondrion",
+    "Mitochondrion inner membrane": "mitochondrion",
+    "Mitochondrion outer membrane": "mitochondrion",
+    "Mitochondrion intermembrane space": "mitochondrion",
+
+    "Secreted": "secreted",
+
+    "Endoplasmic reticulum": "endoplasmic_reticulum",
+    "Endoplasmic reticulum membrane": "endoplasmic_reticulum",
+    "Endoplasmic reticulum lumen": "endoplasmic_reticulum"
+}
+
+def get_label(locations):
+    if not locations:
+        return None
+
+    classes = []
+    experimental_classes = []
+
+    for location in locations:
+        label = get_class(location)
+
+        if label is None:
+            return None
+
+        classes.append(label)
+
+    classes = set(classes)
+
+    if len(classes) != 1:
+        return None
+
+    label = next(iter(classes))
+
+    if label not in experimental_classes:
+        return None
+
+    return label
