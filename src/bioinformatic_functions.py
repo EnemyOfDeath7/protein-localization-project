@@ -7,11 +7,8 @@ def get_locations(text):
         return []
     
     text = text.replace("SUBCELLULAR LOCATION:", "")
-    
-    text = re.sub(r"\{ECO:[0-9]+\}", "", text)
-    
+
     text = text.split("Note=", 1)[0]
-    
     text = re.sub(r"\{[^{}]*\}", lambda match: match.group().replace(".", "<DOT>"), text)
 
     locations = []
@@ -23,11 +20,13 @@ def get_locations(text):
 
         if not part:
             continue
-
+        
+        evidence = re.findall(r"ECO:\d{7}", part)
+        
         name = re.sub(r"\{[^{}]*\}", "", part).strip()
 
         if name:
-            locations.append(name)
+            locations.append((name, evidence))
 
     return locations
 
@@ -62,13 +61,16 @@ def get_label(locations):
     classes = []
     experimental_classes = []
 
-    for location in locations:
+    for location, evidence in locations:
         label = get_class(location)
 
         if label is None:
             return None
 
         classes.append(label)
+        
+        if "ECO:0000269" in evidence:
+            experimental_classes.append(label)
 
     classes = set(classes)
 
