@@ -8,6 +8,8 @@ KD = {
     "S": -0.8, "T": -0.7, "W": -0.9, "Y": -1.3, "V": 4.2,
 }
 
+# --------------------------------------------------------------------------------------------------
+# Подсчёт частот аминокислот для последовательностей
 def calc_sequence_freq(seq):
     
     if not isinstance(seq, str) or not seq:
@@ -18,6 +20,8 @@ def calc_sequence_freq(seq):
     
     return pd.Series({f"freq_{am}": seq.count(am) / len(seq) for am in AMINO_LST})
 
+# --------------------------------------------------------------------------------------------------
+# Подсчёт частот аминокислот для меток
 def calc_aminoacids_freq(df):
     freqs = df["Sequence"].apply(calc_sequence_freq)
 
@@ -27,6 +31,8 @@ def calc_aminoacids_freq(df):
 
     return result
 
+# --------------------------------------------------------------------------------------------------
+# Подсчёт средней гидрофобности GRAVY для последовательностей
 def gravy(seq):
     if not isinstance(seq, str) or not seq:
         raise ValueError("Последовательность должна быть непустой строкой.")
