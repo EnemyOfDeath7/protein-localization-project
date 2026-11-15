@@ -10,21 +10,28 @@ KD = {
 
 def calc_sequence_freq(seq):
     
-    length = len(seq)
+    if not isinstance(seq, str) or not seq:
+        raise ValueError("Последовательность должна быть непустой строкой.")
+
+    if not set(seq).issubset(AMINO_LST):
+        raise ValueError("В последовательности есть неподдерживаемые символы.")
     
-    return pd.Series({f"freq_{am}": seq.count(am) / length for am in AMINO_LST})
+    return pd.Series({f"freq_{am}": seq.count(am) / len(seq) for am in AMINO_LST})
 
 def calc_aminoacids_freq(df):
-    
-    label_seq = df.groupby(by="label")["Sequence"].sum().reset_index()
-    
-    freq_label_aa = label_seq["Sequence"].apply(calc_sequence_freq)
-    
-    result = pd.concat([label_seq[["label"]], freq_label_aa], axis=1)
-    
+    freqs = df["Sequence"].apply(calc_sequence_freq)
+
+    freqs["label"] = df["label"]
+
+    result = (freqs.groupby("label").mean().reset_index())
+
     return result
 
 def gravy(seq):
-    vals = [KD[aa] for aa in seq if aa in KD]
+    if not isinstance(seq, str) or not seq:
+        raise ValueError("Последовательность должна быть непустой строкой.")
 
-    return sum(vals) / len(vals) if vals else float("nan")
+    if not set(seq).issubset(KD):
+        raise ValueError("В последовательности есть неподдерживаемые символы.")
+
+    return sum(KD[aa] for aa in seq) / len(seq)
